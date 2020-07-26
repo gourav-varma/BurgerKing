@@ -11,18 +11,17 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Burger King',
-      theme: ThemeData(
-        canvasColor: Colors.white
-      ),
-      debugShowCheckedModeBanner: false,
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => FakeDB(),)
-        ],
-        child: HomePage()),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => FakeDB(),
+        )
+      ],
+      child: MaterialApp(
+          title: 'Burger King',
+          theme: ThemeData(canvasColor: Colors.white),
+          debugShowCheckedModeBanner: false,
+          home: HomePage()),
     );
   }
 }
-
