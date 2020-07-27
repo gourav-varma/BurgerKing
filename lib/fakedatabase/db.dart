@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:burger_king/screens/search.dart';
 import 'package:flutter/cupertino.dart';
 
 class FakeDB extends ChangeNotifier{
@@ -13,20 +14,31 @@ class FakeDB extends ChangeNotifier{
 
   int _totalAmount = 0;
   int _items = 0;
+  int _searchAmount = 0;
+  int _searchItems = 0;
   List _newproduct = [];
+  List _searchList = [];
+  List _orderList = [];
   bool _vegVal = false;
-
-  get vegVal => _vegVal;
-
-  set vegVal(bool val){
-    _vegVal = val;
-    notifyListeners();
-  }
 
   get totalAmount => _totalAmount;
 
   set totalAmount(int val){
     _totalAmount = val;
+    notifyListeners();
+  }
+
+  get searchAmount => _searchAmount;
+
+  set searchAmount(int val){
+    _searchAmount = val;
+    notifyListeners();
+  }
+
+  get searchItems => _searchItems;
+
+  set searchItems(int val){
+    _searchItems = val;
     notifyListeners();
   }
 
@@ -37,6 +49,12 @@ class FakeDB extends ChangeNotifier{
     notifyListeners();
   }
 
+  get vegVal => _vegVal;
+
+  set vegVal(bool val){
+    _vegVal = val;
+    notifyListeners();
+  }
 
   get newproduct => _newproduct;
 
@@ -45,19 +63,19 @@ class FakeDB extends ChangeNotifier{
     notifyListeners();
   }
 
-  // incCount(List list,int index){
-  //   notifyListeners();
-  //   print("npnpnpnppnnppn$newproduct");
-  // }
+  get searchList => _searchList;
 
-  // decCount(List list,int index){
-  //   notifyListeners();
-  // }
-  
-  // totAmount(List list){
-  //   notifyListeners();
-  //   print(totalAmount);
-  // }
+  set searchList(List val){
+    _searchList = val;
+    notifyListeners();
+  }
+
+  get orderList => _orderList;
+
+  set orderList(List val){
+    _orderList = val;
+    notifyListeners();
+  }
 
   api(String query, result){
     totalAmount = 0;
@@ -68,13 +86,27 @@ class FakeDB extends ChangeNotifier{
       if(element[query]==result){
       newproduct.add(element);
       }
-      notifyListeners();
+      // notifyListeners();
     });
+    notifyListeners();
   }
+
+  search(){
+    totalAmount = 0;
+    searchList = [];
+    String json = jsonEncode(dbs);
+    Map<String, dynamic> jsonData = jsonDecode(json);
+    (jsonData["hello"] as List<dynamic>).forEach((element) {
+      searchList.add(element);
+    });
+    notifyListeners();
+    print(searchList);
+  }
+
   Map<String, dynamic> dbs ={"hello": [
     {
     "category": "Meal Combos",
-    "title": "Crispy Chicken Supreme × 2",
+    "title": "Crispy Chicken",
     "subtitle": "Regular Meal With Fries(R) + Pepsi(R)",
     "cost": 170,
     "count": 0,
@@ -128,7 +160,7 @@ class FakeDB extends ChangeNotifier{
   },
   {
     "category": "King Saver Combo",
-    "title": "Chicken Chilli Cheese Melt × 2",
+    "title": "crispy chicken",
     "subtitle": "Regular Meal With Fries(R) + Pepsi(R)",
     "cost": 258,
     "count": 0,
