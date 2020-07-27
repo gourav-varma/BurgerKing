@@ -10,12 +10,18 @@ class FakeDB extends ChangeNotifier{
   factory FakeDB(){
       return _singleton;
   }
-  
-  List db = [];
+
   int _totalAmount = 0;
   int _items = 0;
+  List _newproduct = [];
+  bool _vegVal = false;
 
- 
+  get vegVal => _vegVal;
+
+  set vegVal(bool val){
+    _vegVal = val;
+    notifyListeners();
+  }
 
   get totalAmount => _totalAmount;
 
@@ -39,37 +45,25 @@ class FakeDB extends ChangeNotifier{
     notifyListeners();
   }
 
-  incCount(List list,int index){
-    // print(newproduct);
-    // db[index]["count"] += 1;
-    notifyListeners();
-    print("npnpnpnppnnppn$newproduct");
-  }
+  // incCount(List list,int index){
+  //   notifyListeners();
+  //   print("npnpnpnppnnppn$newproduct");
+  // }
 
-  decCount(List list,int index){
-    // db[index]["count"] -= 1;
-    notifyListeners();
-  }
+  // decCount(List list,int index){
+  //   notifyListeners();
+  // }
   
-  totAmount(List list){
-    // _totalAmount = 0;
-    // list.forEach((element) {
-    //   if(element["count"]!=0){
-    //     totalAmount += element["count"]*element["cost"];
-    //   }
-    // });
-    notifyListeners();
-    print(totalAmount);
-  }
-
-  List _newproduct = [];
+  // totAmount(List list){
+  //   notifyListeners();
+  //   print(totalAmount);
+  // }
 
   api(String query, result){
     totalAmount = 0;
     newproduct = [];
     String json = jsonEncode(dbs);
     Map<String, dynamic> jsonData = jsonDecode(json);
-    // (data["quotes"] as List<dynamic>).forEach((item) => item["favorite"] = true);
     (jsonData["hello"] as List<dynamic>).forEach((element) {
       if(element[query]==result){
       newproduct.add(element);
@@ -77,7 +71,44 @@ class FakeDB extends ChangeNotifier{
       notifyListeners();
     });
   }
-  Map<String, dynamic> dbs ={"hello": [{
+  Map<String, dynamic> dbs ={"hello": [
+    {
+    "category": "Meal Combos",
+    "title": "Crispy Chicken Supreme × 2",
+    "subtitle": "Regular Meal With Fries(R) + Pepsi(R)",
+    "cost": 170,
+    "count": 0,
+    "veg": false,
+    "image": "assets/crispychickensupreme.JPG"
+  },
+  {
+    "category": "Meal Combos",
+    "title": "BK Veggie + Creamy Paneer Bowl",
+    "subtitle": "Regular Meal With Fries(R) + Pepsi(R)",
+    "cost": 214,
+    "count": 0,
+    "veg": true,
+    "image": "assets/bkvegiecreamypaneer(kingsaver).JPG"
+  },
+  {
+    "category": "Meal Combos",
+    "title": "Chicken Chilli Cheese Melt × 2",
+    "subtitle": "Regular Meal With Fries(R) + Pepsi(R)",
+    "cost": 258,
+    "count": 0,
+    "veg": false,
+    "image": "assets/chickenchilli(kingssaver).JPG"
+  },
+  {
+    "category": "Meal Combos",
+    "title": "Veg Whopper × 2",
+    "subtitle": "Regular Meal With Fries(R) + Pepsi(R)",
+    "cost": 298,
+    "count": 0,
+    "veg": true,
+    "image": "assets/vegwhopper(kingsaver).JPG"
+  },
+    {
     "category": "King Saver Combo",
     "title": "Crispy Chicken Supreme × 2",
     "subtitle": "Regular Meal With Fries(R) + Pepsi(R)",
@@ -103,6 +134,15 @@ class FakeDB extends ChangeNotifier{
     "count": 0,
     "veg": false,
     "image": "assets/chickenchilli(kingssaver).JPG"
+  },
+  {
+    "category": "King Saver Combo",
+    "title": "Veg Whopper × 2",
+    "subtitle": "Regular Meal With Fries(R) + Pepsi(R)",
+    "cost": 298,
+    "count": 0,
+    "veg": true,
+    "image": "assets/vegwhopper(kingsaver).JPG"
   },
   {
     "category": "Whopper",

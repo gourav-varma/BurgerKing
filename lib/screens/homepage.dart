@@ -12,6 +12,7 @@ class _HomePageState extends State<HomePage> {
   List db;
   FakeDB dB = FakeDB();
   int totalAmt = 0;
+  List veglist = [];
 
   fetchAmount() {
     setState(() {
@@ -23,6 +24,18 @@ class _HomePageState extends State<HomePage> {
     FakeDB dB = FakeDB();
     dB.api(query, result);
     db = dB.newproduct;
+  }
+
+  vegProduct() {
+    veglist = [];
+    setState(() {
+      (dB.newproduct as List<dynamic>).forEach((element) {
+        if (element["veg"]) {
+          veglist.add(element);
+        }
+      });
+      dB.newproduct = veglist;
+    });
   }
 
   @override
@@ -39,8 +52,8 @@ class _HomePageState extends State<HomePage> {
     // print(width);
     // print(height);
     // print(db);
-    print("hellooooooo$db");
-    print("total amount - $totalAmt");
+    // print("hellooooooo$db");
+    // print("total amount - $totalAmt");
     return Scaffold(
       body: Container(
         margin: EdgeInsets.only(
@@ -58,16 +71,17 @@ class _HomePageState extends State<HomePage> {
                       margin: EdgeInsets.only(right: 10),
                       child: FlatButton(
                         onPressed: () {
-                          // Provider.of<FakeDB>(context, listen: false).fetchKS();
                           setState(() {
+                            dB.vegVal=false;
                             fetchProducts("category", "King Saver Combo");
-                            Provider.of<FakeDB>(context, listen: false)
-                                .api("category", "King Saver Combo");
+                            // Provider.of<FakeDB>(context, listen: false)
+                            //     .api("category", "King Saver Combo");
                           });
                         },
+                        color:dB.newproduct[0]["category"] == "King Saver Combo" ?  Colors.amber: null,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
-                            side: BorderSide(color: Colors.black)),
+                            side: BorderSide(color: Colors.black45)),
                         child: Text("King Saver..."),
                       ),
                     ),
@@ -76,24 +90,30 @@ class _HomePageState extends State<HomePage> {
                       child: FlatButton(
                         onPressed: () {
                           setState(() {
+                            dB.vegVal=false;
                             fetchProducts("category", "Whopper");
-                            Provider.of<FakeDB>(context, listen: false)
-                                .api("category", "Whopper");
                           });
                         },
+                        color:dB.newproduct[0]["category"] == "Whopper" ?  Colors.amber: null,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
-                            side: BorderSide(color: Colors.black)),
+                            side: BorderSide(color: Colors.black45)),
                         child: Text("Whopper"),
                       ),
                     ),
                     Container(
                       margin: EdgeInsets.only(right: 10),
                       child: FlatButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            dB.vegVal=false;
+                            fetchProducts("category", "Meal Combos");
+                          });
+                        },
+                        color:dB.newproduct[0]["category"] == "Meal Combos" ?  Colors.amber: null,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
-                            side: BorderSide(color: Colors.black)),
+                            side: BorderSide(color: Colors.black45)),
                         child: Text("Meal Combos"),
                       ),
                     ),
@@ -103,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                         onPressed: () {},
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
-                            side: BorderSide(color: Colors.black)),
+                            side: BorderSide(color: Colors.black45)),
                         child: Text("Classic Burgers"),
                       ),
                     ),
@@ -112,7 +132,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+              margin: EdgeInsets.only(top: 5, left: 10, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -121,10 +141,33 @@ class _HomePageState extends State<HomePage> {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 15.5),
                   ),
-                  Text(
-                    "Veg",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.5),
+                  Row(
+                    children: [
+                      Text(
+                        "Veg",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15.5),
+                      ),
+                      Switch(
+                        value: dB.vegVal,
+                        onChanged: (v) {
+                          setState(() {
+                            dB.vegVal = !dB.vegVal;
+                            print(dB.vegVal);
+                            if (dB.vegVal) {
+                              vegProduct();
+                            }else{
+                              if(dB.newproduct[0]["category"]=="King Saver Combo"){
+                                fetchProducts("category", "King Saver Combo");
+                              }else if(dB.newproduct[0]["category"]=="Whopper"){
+                                fetchProducts("category", "Whopper");
+                              }else if(dB.newproduct[0]["category"]=="Meal Combos"){
+                                fetchProducts("category", "Meal Combos");
+                            }}
+                          });
+                        },
+                      ),
+                    ],
                   )
                 ],
               ),
@@ -140,9 +183,8 @@ class _HomePageState extends State<HomePage> {
                         builder: (context, value, child) => ListView.builder(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            itemCount: db.length,
+                            itemCount: dB.newproduct.length,
                             itemBuilder: (context, index) {
-                              print(db.length);
                               return ListItem(
                                 // image: db[index]["image"].toString(),
                                 // title: db[index]["title"].toString(),
@@ -259,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.white,
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -368,11 +410,9 @@ class _ListItemState extends State<ListItem> {
 
   @override
   Widget build(BuildContext context) {
-    print("dbdbdbbddb${dB.newproduct}");
-    return 
-    // Consumer<FakeDB>(
-      // builder: (context, value, child) => 
-      Container(
+    // print("dbdbdbbddb${dB.newproduct}");
+    return Consumer<FakeDB>(
+      builder: (context, value, child) => Container(
         margin: widget.index == (dB.newproduct as List<dynamic>).length - 1
             ? EdgeInsets.only(bottom: 80)
             : EdgeInsets.only(bottom: 20),
@@ -425,7 +465,8 @@ class _ListItemState extends State<ListItem> {
                           Container(
                             width: 140,
                             child: Text(
-                              dB.newproduct[widget.index]["subtitle"].toString(),
+                              dB.newproduct[widget.index]["subtitle"]
+                                  .toString(),
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w600),
                             ),
@@ -483,8 +524,8 @@ class _ListItemState extends State<ListItem> {
                                   //     .totAmount(dB.newproduct);
                                 },
                                 child: Container(
-                                  width: 30,
-                                  height: 30,
+                                  width: 35,
+                                  height: 35,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -520,8 +561,8 @@ class _ListItemState extends State<ListItem> {
                                   //     .totAmount(dB.newproduct);
                                 },
                                 child: Container(
-                                  width: 30,
-                                  height: 30,
+                                  width: 35,
+                                  height: 35,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
@@ -543,7 +584,7 @@ class _ListItemState extends State<ListItem> {
             ),
           ],
         ),
-      // ),
+      ),
     );
   }
 }
