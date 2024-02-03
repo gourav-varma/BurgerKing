@@ -1,6 +1,6 @@
 # burger_king
 
-A new Flutter project.
+A clone of the Burger King App that allows user to add, delete, modify and place orders made in Flutter.
 
 ## Getting Started
 
